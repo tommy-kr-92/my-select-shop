@@ -74,6 +74,4 @@ public class UserController {
 
         return "index::#fragment";   // 동적으로 데이터를 보내주기 위해서 사용
     }
-
-
 }
