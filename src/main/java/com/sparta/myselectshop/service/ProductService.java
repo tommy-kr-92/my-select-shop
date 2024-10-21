@@ -49,6 +49,7 @@ public class ProductService {
 		return new ProductResponseDto(product);
 	}
 
+	@Transactional(readOnly = true)	// 조회 성능을 높이기 위해 readOnly Option 사용
 	public Page<ProductResponseDto> getProducts(User user, int page, int size, String sortBy, boolean isAsc) {
 		// 정렬 전처리
 		Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
