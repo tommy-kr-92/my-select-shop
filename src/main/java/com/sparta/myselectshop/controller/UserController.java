@@ -30,19 +30,22 @@ public class UserController {
     private final UserService userService;
     private final FolderService folderService;
 
+    // ThymLeaf 로그인 페이지 이동
     @GetMapping("/user/login-page")
     public String loginPage() {
         return "login";
     }
 
+    // SignUp 페이지 이동
     @GetMapping("/user/signup")
     public String signupPage() {
         return "signup";
     }
 
+    // User SignUp
     @PostMapping("/user/signup")
     public String signup(@Valid SignupRequestDto requestDto, BindingResult bindingResult) {
-        // Validation 예외처리
+        // Validation 예외처리 -> SignupRequestDto Validation -> BindingResult 도출
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if(fieldErrors.size() > 0) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
@@ -58,19 +61,19 @@ public class UserController {
 
     // 회원 관련 정보 받기
     @GetMapping("/user-info")
-    @ResponseBody
-    public UserInfoDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String username = userDetails.getUser().getUsername();
-        UserRoleEnum role = userDetails.getUser().getRole();
-        boolean isAdmin = (role == UserRoleEnum.ADMIN);
+    @ResponseBody   // Data 를 RequestBody로 받음
+    public UserInfoDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {  // User Info 가져오기
+        String username = userDetails.getUser().getUsername();  // Username
+        UserRoleEnum role = userDetails.getUser().getRole();    // Role
+        boolean isAdmin = (role == UserRoleEnum.ADMIN); // Check the Role
 
         return new UserInfoDto(username, isAdmin);
     }
 
     @GetMapping("/user-folder")
-    public String getUserInfo(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public String getUserInfo(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){   // Form 형식으로 데이터를 받기
 
-        model.addAttribute("folders", folderService.getFolders(userDetails.getUser()));
+        model.addAttribute("folders", folderService.getFolders(userDetails.getUser())); // Model에 담아서 뷰단으로 보내주기
 
         return "index::#fragment";   // 동적으로 데이터를 보내주기 위해서 사용
     }

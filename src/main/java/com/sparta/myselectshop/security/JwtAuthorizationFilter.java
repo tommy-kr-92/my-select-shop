@@ -28,21 +28,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // Filter 인가
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);  // Header에서 token 추출
 
-        if (StringUtils.hasText(tokenValue)) {
+        if (StringUtils.hasText(tokenValue)) {  // tokenValue 확인
 
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Token Error");
                 return;
             }
 
+            // Token 에서 User Info 추출
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
+                // User Info 에서 username 을 setAuthentication
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -50,6 +53,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         }
 
+        // Go to next Filter
         filterChain.doFilter(req, res);
     }
 

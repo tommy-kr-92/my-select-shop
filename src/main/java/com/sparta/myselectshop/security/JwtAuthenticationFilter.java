@@ -24,6 +24,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         setFilterProcessesUrl("/api/user/login");
     }
 
+    // 인증 시도 - HttpServletRequest, HttpServletResponse, throw AuthenticationException
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
@@ -42,6 +43,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
+    // 인증 성공 - HttpServletRequest, HttpServletResponse, FilterChain, Authentication
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
@@ -51,6 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);    // 이 부분이 쿠키 방법과는 다름 - Header 부분에 token을 담아서 전송
     }
 
+    // 인증 실패 - HttpServletRequest, HttpServletResponse, AuthenticationException
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);    // 클라이언트가 상태 데이터를 담아서 보내달라고 하면 이 부분을 수정하면 됨
